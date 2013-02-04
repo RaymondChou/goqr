@@ -1,22 +1,37 @@
-# Compiled Object files, Static and Dynamic libs (Shared Objects)
-*.o
-*.a
-*.so
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*.sass-cache
 
-# Folders
-_obj
-_test
+# OS or Editor folders
+.DS_Store
+Thumbs.db
+.cache
+.project
+.settings
+.tmproj
+*.esproj
+nbproject
 
-# Architecture specific extensions/prefixes
-*.[568vq]
-[568vq].out
+# Dreamweaver added files
+_notes
+dwsync.xml
 
-*.cgo1.go
-*.cgo2.c
-_cgo_defun.c
-_cgo_gotypes.go
-_cgo_export.*
+# Komodo
+*.komodoproject
+.komodotools
 
-_testmain.go
-
-*.exe
+# Folders to ignore
+.hg
+.svn
+.CVS
+intermediate
+publish
+.idea
