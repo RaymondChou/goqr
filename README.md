@@ -14,10 +14,6 @@ A fast qrcode generate write with google golang.
 
 	go get github.com/freezestart/goqr/pkg
 
-	go get github.com/freezestart/goqr/pkg/gf256
-
-	go get github.com/freezestart/goqr/pkg/coding
-
 3.编译
 
 	go build main.go
