@@ -4,8 +4,8 @@ Package qr encodes QR codes.
 package qr
 
 import (
-	"./coding"
 	"errors"
+	"github.com/freezestart/goqr/pkg/coding"
 	"image"
 	"image/color"
 )

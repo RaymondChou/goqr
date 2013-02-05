@@ -1,8 +1,8 @@
 package coding
 
 import (
-	"../gf256"
 	"fmt"
+	"github.com/freezestart/goqr/pkg/gf256"
 	"strconv"
 	"strings"
 )

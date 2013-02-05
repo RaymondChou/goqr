@@ -1,10 +1,10 @@
 package main
 
 import (
-	"./pkg"
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/freezestart/goqr/pkg"
 	"image"
 	"image/color"
 	"image/png"
@@ -16,49 +16,73 @@ import (
 
 var ch chan int
 
-func main() {
+var qrinput = flag.String("data", "", "please use -data input qr data string.")
 
-	qrinput := flag.String("data", "", "please input qr data string.")
+var server = flag.Bool("server", false, "Use Server")
+
+func main() {
 
 	flag.Parse()
 
-	qrarray := strings.Split(*qrinput, ",")
+	if *server {
 
-	begintime := time.Now().Unix()
+		fmt.Println("Server started at port 8889")
 
-	ch = make(chan int)
+		//@todo
 
-	os.Mkdir("output", 0755)
+	} else {
 
-	for i, qrdata := range qrarray {
+		if *qrinput == "" {
+			fmt.Println("please use -data input qr data string.")
+			return
+		}
 
-		fmt.Println("QREncoding >>>>>> " + qrdata)
+		qrarray := strings.Split(*qrinput, ",")
 
-		go output(qrdata, i)
+		begintime := time.Now().Unix()
 
-		<-ch
+		ch = make(chan int)
+
+		os.Mkdir("output", 0755)
+
+		for i, qrdata := range qrarray {
+
+			fmt.Println("QREncoding >>>>>> " + qrdata)
+
+			go output(qrdata, i)
+
+			<-ch
+
+		}
+
+		endtime := time.Now().Unix()
+
+		fmt.Println("completed time in seconds : " + fmt.Sprintf("%d", endtime-begintime))
 
 	}
 
-	endtime := time.Now().Unix()
-
-	fmt.Println("completed time in seconds : " + fmt.Sprintf("%d", endtime-begintime))
 }
 
 func output(data string, i int) {
 
 	c, err := qr.Encode(data, qr.M)
+
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	pngdat := c.PNG()
+
 	if true {
 		ioutil.WriteFile("output/"+fmt.Sprint(i+1)+".png", pngdat, 0666)
 	}
+
 	m, err := png.Decode(bytes.NewBuffer(pngdat))
+
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	gm := m.(*image.Gray)
 
 	scale := c.Scale
@@ -66,18 +90,24 @@ func output(data string, i int) {
 	nbad := 0
 
 	for y := 0; y < scale*(8+siz); y++ {
+
 		for x := 0; x < scale*(8+siz); x++ {
+
 			v := byte(255)
+
 			if c.Black(x/scale-4, y/scale-4) {
 				v = 0
 			}
+
 			if gv := gm.At(x, y).(color.Gray).Y; gv != v {
 				fmt.Println("%d,%d = %d, want %d", x, y, gv, v)
 				if nbad++; nbad >= 20 {
 					fmt.Println("too many bad pixels")
 				}
 			}
+
 		}
+
 	}
 
 	ch <- 1
