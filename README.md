@@ -20,13 +20,19 @@ A fast qrcode generate write with google golang.
 
 4.批量生成
 
-	main -data=sometext,anothertext,moretext
+	goqr -data=sometext,anothertext,moretext
 
 png图片将按照输入顺序按序号生成在main目录下的output目录
 
 5.服务端接口
 
-//@todo
+	goqr -server
+
+6.指定服务启动端口
+
+	goqr -server -port=8888
+
+默认8889
 
 ###测试结果
 
