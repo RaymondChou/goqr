@@ -75,7 +75,7 @@ func main() {
 
 func output(data string, i int, goroutine bool) {
 
-	c, err := qr.Encode(data, qr.M)
+	c, err := qr.Encode(data, qr.L)
 
 	if err != nil {
 		fmt.Println(err)

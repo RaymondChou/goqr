@@ -8,7 +8,7 @@ import (
 )
 
 // Field is the field for QR error correction.
-var Field = gf256.NewField(0x11d, 2)
+var Field = gf256.NewField(0x11d, 1)
 
 // A Version represents a QR version.
 // The version specifies the size of the QR code:
