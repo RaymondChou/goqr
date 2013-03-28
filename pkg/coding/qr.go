@@ -2,7 +2,7 @@ package coding
 
 import (
 	"fmt"
-	"github.com/freezestart/goqr/pkg/gf256"
+	"github.com/RaymondChou/goqr/pkg/gf256"
 	"strconv"
 	"strings"
 )

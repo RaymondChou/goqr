@@ -4,7 +4,7 @@ import (
 	_ "bytes"
 	"flag"
 	"fmt"
-	"github.com/freezestart/goqr/pkg"
+	"github.com/RaymondChou/goqr/pkg"
 	_ "image"
 	_ "image/color"
 	_ "image/png"
@@ -138,7 +138,7 @@ func api(w http.ResponseWriter, r *http.Request) {
 
 			data := strings.Join(v, "")
 
-			c, err := qr.Encode(data, qr.M)
+			c, err := qr.Encode(data, qr.L)
 			if err != nil {
 				fmt.Println(err)
 			}
