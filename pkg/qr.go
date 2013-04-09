@@ -60,7 +60,7 @@ func Encode(text string, level Level) (*Code, error) {
 
 	// TODO: Pick appropriate mask.
 
-	return &Code{cc.Bitmap, cc.Size, cc.Stride, 1}, nil
+	return &Code{cc.Bitmap, cc.Size, cc.Stride, 8}, nil
 }
 
 // A Code is a square pixel grid.
@@ -96,7 +96,7 @@ var (
 
 func (c *codeImage) Bounds() image.Rectangle {
 	d := (c.Size + 8) * c.Scale
-	return image.Rect(0, 0, d, d)
+	return image.Rect(0, 0, d - 1, d - 1)
 }
 
 func (c *codeImage) At(x, y int) color.Color {
