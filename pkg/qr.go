@@ -95,8 +95,8 @@ var (
 )
 
 func (c *codeImage) Bounds() image.Rectangle {
-	d := (c.Size + 8) * c.Scale
-	return image.Rect(0, 0, d-4, d-4)
+	d := (c.Size) * c.Scale
+	return image.Rect(0, 0, d, d)
 }
 
 func (c *codeImage) At(x, y int) color.Color {
