@@ -5,7 +5,7 @@ package qr
 
 import (
 	"errors"
-	"github.com/RaymondChou/goqr/pkg/coding"
+	"github.com/loggi/goqr/pkg/coding"
 	"image"
 	"image/color"
 )

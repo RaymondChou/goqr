@@ -4,7 +4,7 @@ import (
 	_ "bytes"
 	"flag"
 	"fmt"
-	"github.com/RaymondChou/goqr/pkg"
+	"github.com/loggi/goqr/pkg"
 	_ "image"
 	_ "image/color"
 	_ "image/png"
