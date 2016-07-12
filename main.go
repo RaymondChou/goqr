@@ -24,6 +24,10 @@ var server = flag.Bool("server", false, "Use Server")
 
 var port = flag.Int("port", 8889, "Listening")
 
+var debug = flag.Bool("debug", false, "Debug, may print sensitive data.")
+
+const shown = 8
+
 func main() {
 
 	flag.Parse()
@@ -37,7 +41,7 @@ func main() {
 		if err != nil {
 			log.Fatal("ListenAndServe: ", err)
 		} else {
-			fmt.Println("Server started at port: " + fmt.Sprintf("%d", *port))
+			log.Println("Server started at port: " + fmt.Sprintf("%d", *port))
 		}
 
 	} else {
@@ -75,10 +79,10 @@ func main() {
 
 func output(data string, i int, goroutine bool) {
 
-	c, err := qr.Encode(data, qr.L)
+	c, err := qr.Encode(data, qr.H)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	pngdat := c.PNG()
@@ -126,21 +130,24 @@ func output(data string, i int, goroutine bool) {
 
 func api(w http.ResponseWriter, r *http.Request) {
 
-	var vaild bool
+	var valid bool
 
 	r.ParseForm()
 
 	for k, v := range r.Form {
 
 		if k == "data" {
-			fmt.Println(k)
-			fmt.Println(strings.Join(v, ""))
+			var inputed = strings.Join(v, "")
+			if !*debug {
+				inputed = mask(inputed)
+			}
+			log.Printf("%v: %v\n", k, inputed)
 
 			data := strings.Join(v, "")
 
 			c, err := qr.Encode(data, qr.L)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 			}
 			pngdat := c.PNG()
 
@@ -148,13 +155,26 @@ func api(w http.ResponseWriter, r *http.Request) {
 			w.Write(pngdat)
 
 			defer func() {
-				vaild = true
+				valid = true
 			}()
 		}
 
 	}
 
-	if vaild == false {
-		fmt.Fprintf(w, "Please input data using get method!")
+	if valid == false {
+		fmt.Fprintf(w, "Please input `data` using get method!")
 	}
+}
+
+
+func mask(inputed string) string {
+	var res = make([]byte, len(inputed))
+	for i := range res {
+		if i < shown {
+			res[i] = inputed[i]
+		} else {
+			res[i] = '*'
+		}
+	}
+	return string(res)
 }
