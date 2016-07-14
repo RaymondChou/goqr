@@ -26,7 +26,7 @@ var port = flag.Int("port", 8889, "Listening")
 
 var debug = flag.Bool("debug", false, "Debug, may print sensitive data.")
 
-var logo image.Image = nil
+var logo qr.Logo
 
 const shown = 8
 
@@ -34,14 +34,9 @@ func main() {
 
 	flag.Parse()
 
-	f, _ := os.Open("input/loggi_bit.png")
-	defer f.Close()
-	loaded, _, err := image.Decode(f)
-	if err != nil {
-		log.Println(err)
-	} else {
-		logo = loaded
-	}
+	img := loadImg("input/loggi_bit.png")
+	msk := loadImg("input/loggi_mask.png")
+	logo = qr.Logo{img, msk}
 
 	if *server {
 
@@ -86,6 +81,16 @@ func main() {
 
 	}
 
+}
+
+func loadImg(path string) (image.Image) {
+	f, _ := os.Open(path)
+	defer f.Close()
+	loaded, _, err := image.Decode(f)
+	if err != nil {
+		log.Println(err)
+	}
+	return loaded
 }
 
 func output(data string, i int, goroutine bool) {

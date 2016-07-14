@@ -23,7 +23,7 @@ const (
 )
 
 // Encode returns an encoding of text at the given error correction level.
-func Encode(text string, level Level, logo image.Image) (*Code, error) {
+func Encode(text string, level Level, logo Logo) (*Code, error) {
 	// Pick data encoding, smallest first.
 	// We could split the string and use different encodings
 	// but that seems like overkill for now.
@@ -72,6 +72,12 @@ func Encode(text string, level Level, logo image.Image) (*Code, error) {
 	return &Code{cc.Bitmap, cc.Size, cc.Stride, 8, logo}, nil
 }
 
+
+type Logo struct {
+	Img image.Image
+	Msk image.Image
+}
+
 // A Code is a square pixel grid.
 // It implements image.Image and direct PNG encoding.
 type Code struct {
@@ -79,7 +85,7 @@ type Code struct {
 	Size   int    // number of pixels on a side
 	Stride int    // number of bytes per row
 	Scale  int    // number of image pixels per QR pixel
-	Logo   image.Image //inner logo
+	Logo   Logo   //inner logo
 }
 
 // Black returns true if the pixel at (x,y) is black.

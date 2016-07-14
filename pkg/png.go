@@ -49,13 +49,11 @@ func (c *Code) PNG() []byte {
 	dst := NewImgWithSet(img)
 
 	max := dst.Bounds().Max.X
-	logo := c.Logo.Bounds().Max
-	draw.DrawMask(
+	logo := c.Logo.Img.Bounds().Max
+	draw.Draw(
 		dst,
 		image.Rect((max-logo.X)/2,(max-logo.Y)/2,(max+logo.X)/2,(max+logo.Y)/2),
-		c.Logo,
-		image.Pt(0,0),
-		c.Logo,
+		c.Logo.Img,
 		image.Pt(0,0),
 		draw.Src)
 
