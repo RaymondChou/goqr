@@ -4,10 +4,37 @@ package qr
 
 import (
 	"bytes"
+	"image"
+	"image/draw"
+	"image/png"
+	"image/color"
 	"encoding/binary"
 	"hash"
 	"hash/crc32"
 )
+
+type ImgWithSet struct {
+    image.Image
+    custom map[image.Point]color.Color
+}
+
+func NewImgWithSet(img image.Image) *ImgWithSet {
+    return &ImgWithSet{img, map[image.Point]color.Color{}}
+}
+
+func (m *ImgWithSet) Set(x, y int, c color.Color) {
+    m.custom[image.Point{x, y}] = c
+}
+
+func (m *ImgWithSet) At(x, y int) color.Color {
+    // Explicitly changed part: custom colors of the changed pixels:
+    if c := m.custom[image.Point{x, y}]; c != nil {
+        return c
+    }
+    // Unchanged part: colors of the original image:
+    return m.Image.At(x, y)
+}
+
 
 // PNG returns a PNG image displaying the code.
 //
@@ -17,7 +44,22 @@ import (
 // on c.Image().
 func (c *Code) PNG() []byte {
 	var p pngWriter
-	return p.encode(c)
+	img, _, _ := image.Decode(bytes.NewReader(p.encode(c)))
+
+	dst := NewImgWithSet(img)
+
+	max := dst.Bounds().Max.X
+	logo := c.Logo.Img.Bounds().Max
+	draw.Draw(
+		dst,
+		image.Rect((max-logo.X)/2,(max-logo.Y)/2,(max+logo.X)/2,(max+logo.Y)/2),
+		c.Logo.Img,
+		image.Pt(0,0),
+		draw.Src)
+
+	var buf bytes.Buffer
+    png.Encode(&buf, dst)
+	return buf.Bytes()
 }
 
 type pngWriter struct {

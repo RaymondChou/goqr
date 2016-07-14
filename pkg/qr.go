@@ -5,7 +5,8 @@ package qr
 
 import (
 	"errors"
-	"github.com/RaymondChou/goqr/pkg/coding"
+	_ "fmt"
+	"github.com/loggi/goqr/pkg/coding"
 	"image"
 	"image/color"
 )
@@ -22,7 +23,7 @@ const (
 )
 
 // Encode returns an encoding of text at the given error correction level.
-func Encode(text string, level Level) (*Code, error) {
+func Encode(text string, level Level, logo Logo) (*Code, error) {
 	// Pick data encoding, smallest first.
 	// We could split the string and use different encodings
 	// but that seems like overkill for now.
@@ -58,9 +59,23 @@ func Encode(text string, level Level) (*Code, error) {
 		return nil, err
 	}
 
-	// TODO: Pick appropriate mask.
+	//if logo != nil {
+	//	rect := logo.Bounds()
+	//	fmt.Println(rect.Min, rect.Max)
+	//	for i := 0; i < rect.Max.X; i++ {
+	//	    for j := 0; j < rect.Max.Y; j++ {
+	//			fmt.Println(logo.At(i, j))
+	//		}
+	//	}
+	//}
 
-	return &Code{cc.Bitmap, cc.Size, cc.Stride, 8}, nil
+	return &Code{cc.Bitmap, cc.Size, cc.Stride, 8, logo}, nil
+}
+
+
+type Logo struct {
+	Img image.Image
+	Msk image.Image
 }
 
 // A Code is a square pixel grid.
@@ -70,6 +85,7 @@ type Code struct {
 	Size   int    // number of pixels on a side
 	Stride int    // number of bytes per row
 	Scale  int    // number of image pixels per QR pixel
+	Logo   Logo   //inner logo
 }
 
 // Black returns true if the pixel at (x,y) is black.
